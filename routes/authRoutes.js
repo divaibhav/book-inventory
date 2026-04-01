@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dao = require('../dao/userDAO');
 
+require('dotenv').config();
+
 // POST /auth/register
 router.post('/register', async (req, res) => {
   try {
@@ -19,7 +21,7 @@ router.post('/register', async (req, res) => {
     const user = await dao.createUser(username, hashedPassword);
     res.status(201).json({ message: 'User registered successfully', user });
   } catch (err) {
-    res.status(500).json({ error: 'Registration failed' });
+    res.status(500).json({ error: 'Registration failed,' + err.message });
   }
 });
 
@@ -41,7 +43,7 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,
-      { expiresIn: '1d' }
+      { expiresIn: '1m' }
     );
 
     res.json({ message: 'Login successful', token });

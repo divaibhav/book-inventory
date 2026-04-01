@@ -4,8 +4,12 @@ require('dotenv').config();
 
 app.use(express.json());
 
+const authRoutes = require('./routes/authRoutes');
+
 const bookRoutes = require('./routes/bookRoutes');
-app.use('/books', bookRoutes);
+const authenticate = require('./middleware/authMiddleware');
+app.use('/auth', authRoutes);
+app.use('/books', authenticate, bookRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
